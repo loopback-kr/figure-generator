@@ -45,13 +45,13 @@ services:
       # - ${PWD}/nnUNet_trained_models:/workspace/nnUNet_trained_models
       # - ${PWD}/out:/workspace/out
     environment:
-      - CUDA_VISIBLE_DEVICES=7
+      - CUDA_VISIBLE_DEVICES=1
     command: "
         python nnunet/inference/predict_simple.py --save_npz -tr nnUNetTrainerV2
-        -i data/ISLES22_DWI_fixed_val_fold0
-        -o nnUNet_outputs/ISLES22_DWI_Joint
-        -t 511
+        -i data/ISLES22_ADC_fixed_val_fold0
+        -o nnUNet_outputs/ISLES22_ADC_Scratch
+        -t 799
         -m 3d_fullres
-        -p nnUNetPlans_pretrained_nnUNetData_plans_v2.1
         "
+        # -p nnUNetPlans_pretrained_nnUNetData_plans_v2.1
   
