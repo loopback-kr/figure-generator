@@ -1,0 +1,187 @@
+{
+    // IntelliSense를 사용하여 가능한 특성에 대해 알아보세요.
+    // 기존 특성에 대한 설명을 보려면 가리킵니다.
+    // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: 현재 파일",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${fileDirname}"
+        },
+        {
+            "name": "Python: nnUNet_plan_and_preprocess",
+            "type": "python",
+            "request": "launch",
+            "program": "nnunet/experiment_planning/nnUNet_plan_and_preprocess.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "-t",
+                // "551",
+                "910",
+                "911",
+                "912",
+                // "-target_plane",
+                // "1",
+                // "--verify_dataset_integrity",
+            ]
+        },
+        {
+            "name": "Python: nnUNet_plan_and_preprocess-Finetune",
+            "type": "python",
+            "request": "launch",
+            "program": "nnunet/experiment_planning/nnUNet_plan_and_preprocess.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "-t",
+                "910",
+                // "-target_plane",
+                // "0",
+                // "--verify_dataset_integrity",
+                "-overwrite_plans_identifier",
+                "nnUNetData_plans_v2.1",
+                "-pl3d",
+                "ExperimentPlanner3D_v21_Pretrained",
+                "-overwrite_plans",
+                "nnUNet_trained_models/nnUNet/3d_fullres/Task900/nnUNetTrainerV2__nnUNetPlansv2.1/plans.pkl",
+            ]
+        },
+        {
+            "name": "Python: run_training-MultiTask",
+            "type": "python",
+            "request": "launch",
+            "program": "nnunet/run/run_training.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "3d_fullres",
+                "nnUNetTrainerV2",
+                "--deterministic",
+                // "620,621,622,623",
+                // "501",
+                "910,911,912",
+                "0",
+                "--npz",
+                // "--use_meanloss_for_multitask",
+                "--fixed_validation_set",
+                "BraTS2021_DEBUG",
+                "--max_num_epochs",
+                "2",
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            }
+        },
+        {
+            "name": "Python: run_training-Finetune",
+            "type": "python",
+            "request": "launch",
+            "program": "nnunet/run/run_training.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "3d_fullres",
+                "nnUNetTrainerV2",
+                "--deterministic",
+                "-p",
+                "nnUNetPlans_pretrained_nnUNetData_plans_v2.1",
+                "-pretrained_weights",
+                "nnUNet_trained_models/nnUNet/3d_fullres/Task910/nnUNetTrainerV2__nnUNetPlansv2.1/fold_0/model_final_checkpoint.model",
+                "770",
+                "0",
+                "--npz",
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            }
+        },
+        {
+            "name": "Python: run_training-Finetune-MultiTask",
+            "type": "python",
+            "request": "launch",
+            "program": "nnunet/run/run_training.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "3d_fullres",
+                "nnUNetTrainerV2",
+                "--deterministic",
+                "-p",
+                "nnUNetPlans_pretrained_nnUNetData_plans_v2.1",
+                "-pretrained_weights",
+                "nnUNet_trained_models/nnUNet/3d_fullres/Task910/nnUNetTrainerV2__nnUNetPlansv2.1/fold_0/model_final_checkpoint.model,nnUNet_trained_models/nnUNet/3d_fullres/Task911/nnUNetTrainerV2__nnUNetPlansv2.1/fold_0/model_final_checkpoint.model,nnUNet_trained_models/nnUNet/3d_fullres/Task912/nnUNetTrainerV2__nnUNetPlansv2.1/fold_0/model_final_checkpoint.model,nnUNet_trained_models/nnUNet/3d_fullres/Task913/nnUNetTrainerV2__nnUNetPlansv2.1/fold_0/model_final_checkpoint.model",
+                "770,771,772,773",
+                "0",
+                "--npz",
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            }
+        },
+        {
+            "name": "Python: nnUNet_predict",
+            "type": "python",
+            "request": "launch",
+            "program": "nnunet/inference/predict_simple.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "-i",
+                "nnUNet_raw_data_base/nnUNet_raw_data/Task502_ATLAS/imagesTs",
+                "-o",
+                "outputs/output_Task502_ATLAS_ATLAS_500EP",
+                "-tr",
+                "nnUNetTrainerV2",
+                "-t",
+                "502",
+                "-m",
+                "2d",
+                "--save_npz"
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            }
+        },
+        {
+            "name": "Python: nnUNet_Ensemble",
+            "type": "python",
+            "request": "launch",
+            "program": "nnunet/inference/ensemble_predictions.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "-f",
+                "outputs/output_Task510_2d_ATLAS_ATLAS_1000EP_5Fold",
+                "outputs/output_Task510_3d_fullres_ATLAS_ATLAS_1000EP_5Fold",
+                // "outputs/output_Task510_3d_fullres_ATLAS_ATLAS_1000EP_8:2val",
+                // "union/union(2d0,2d1)_1000ep_8vs2val",
+                // "outputs/output_Task500_2d_ATLAS_ATLAS_1000EP_8:2val",
+                // "outputs/output_Task501_2d_ATLAS_ATLAS_1000EP_8:2val",
+                // "outputs/output_Task502_2d_ATLAS_ATLAS_1000EP_8:2val",
+                
+                // "outputs_2d/output_Task500_ATLAS_ATLAS_500EP",
+                // "outputs_2d/output_Task501_ATLAS_ATLAS_500EP",
+                // "outputs_2d/output_Task502_ATLAS_ATLAS_500EP",
+
+
+                "-o",
+                "ensemble/Ensemble(3d,2d0)_1000EP_5Fold",
+                // "-pp",
+                // "nnUNet_trained_models/nnUNet/2d/Task500_ATLAS/nnUNetTrainerV2__nnUNetPlansv2.1/fold_0/postprocessing.json",
+                // "nnUNet_trained_models/nnUNet/3d_fullres/Task509_ATLAS/nnUNetTrainerV2__nnUNetPlansv2.1/fold_0/postprocessing.json",
+                "-t",
+                "32",
+                "--npz",
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "0"
+            }
+        },
+    ]
+}

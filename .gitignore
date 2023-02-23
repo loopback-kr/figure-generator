@@ -1,0 +1,12 @@
+__pycache__/
+nnUNet_preprocessed/
+nnUNet_raw_data_base/
+nnUNet_trained_models/
+nnUNet_outputs/
+logs/
+*.log
+*.tar*
+*.out
+data/
+nnunet/
+models/

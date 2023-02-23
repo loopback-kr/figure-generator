@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  dev:
+    container_name: figure-generator-dev
+    hostname: figure-generator-dev
+    build:
+      context: ${PWD}
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    shm_size: 2gb
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            capabilities: [gpu]
+            count: all
+    volumes:
+      - ${PWD}:/workspace
+
+  predict:
+    container_name: nnUNet-Predict
+    hostname: nnUNet-Predict
+    build:
+      context: ${PWD}
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    shm_size: 2gb
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            capabilities: [gpu]
+            count: all
+            # device_ids: ['4']
+    volumes:
+      - ${PWD}:/workspace
+      # - ${PWD}/nnunet:/workspace/nnunet
+      # - ${PWD}/nnUNet_raw_data_base:/workspace/nnUNet_raw_data_base
+      # - ${PWD}/nnUNet_preprocessed:/workspace/nnUNet_preprocessed
+      # - ${PWD}/nnUNet_trained_models:/workspace/nnUNet_trained_models
+      # - ${PWD}/out:/workspace/out
+    environment:
+      - CUDA_VISIBLE_DEVICES=7
+    command: "
+        python nnunet/inference/predict_simple.py --save_npz -tr nnUNetTrainerV2
+        -i data/ISLES22_DWI_fixed_val_fold0
+        -o nnUNet_outputs/ISLES22_DWI_Joint
+        -t 511
+        -m 3d_fullres
+        -p nnUNetPlans_pretrained_nnUNetData_plans_v2.1
+        "
+  

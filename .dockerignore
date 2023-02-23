@@ -1,0 +1,7 @@
+.git/
+.vscode/
+nnUNet_raw_data_base/
+nnUNet_preprocessed/
+nnUNet_trained_models/
+nohup.out
+out/
